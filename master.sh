@@ -64,10 +64,9 @@ else
     gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member serviceAccount:marssa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com --role roles/dataflow.worker
     sleep 1
     gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member user:$USER_EMAIL --role roles/iam.serviceAccountUser
-    bq mk mars
     bq mk --schema timestamp:STRING,ipaddr:STRING,action:STRING,srcacct:STRING,destacct:STRING,amount:NUMERIC,customername:STRING -t mars.activities_real_time
     gcloud pubsub topics create mars-topic
-    gcloud pubsub subscriptions create mars-subscription --topic projects/moonbank-mars/topics/activities
+    gcloud pubsub subscriptions create mars-activities --topic projects/moonbank-mars/topics/activities
 fi
 
 echo "Running stream local file"
