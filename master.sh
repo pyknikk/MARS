@@ -46,6 +46,7 @@ bq load mars.activities gs://"$GOOGLE_CLOUD_PROJECT""-bucket"/output/output*
 
 #STREAM_PREP
 #! /bin/bash
+echo "Running Stream prep"
 # MAKE SURE GCP PROJECT IS SET
 # gcloud config set project PROJECT_ID
 if [[ -z "${GOOGLE_CLOUD_PROJECT}" ]]; then
@@ -54,7 +55,7 @@ if [[ -z "${GOOGLE_CLOUD_PROJECT}" ]]; then
     echo "(where PROJECT_ID is the desired project)"
 else
     echo "Project Name: $GOOGLE_CLOUD_PROJECT"
-    gcloud storage buckets create gs://$GOOGLE_CLOUD_PROJECT"-bucket" --soft-delete-duration=0
+    # gcloud storage buckets create gs://$GOOGLE_CLOUD_PROJECT"-bucket" --soft-delete-duration=0
     gcloud services disable dataflow.googleapis.com --force
     gcloud services enable dataflow.googleapis.com
     # gcloud iam service-accounts create marssa
@@ -68,7 +69,7 @@ else
     gcloud pubsub topics create mars-topic
     gcloud pubsub subscriptions create mars-activities --topic projects/moonbank-mars/topics/activities
 fi
-
+cd streaming
 echo "Running stream local file"
 python3 mars-stream-local.py
 
