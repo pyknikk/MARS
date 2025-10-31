@@ -4,9 +4,18 @@ import os
 import datetime
 
 def processline(line):
-    outputrow = {'message' : line}
+    strline = str(line)
+    parameters=strline.split(",")
+    dateserial = parameters[0]
+    ipaddr = parameters[1]
+    action = parameters[2]
+    srcacct = parameters[3]
+    destacct = parameters[4]
+    amount = float(parameters[5])
+    name = parameters[6]
+    outputrow = {'timestamp' : dateserial, 'ipaddr' : ipaddr, 'action' : action, 'srcacct' : srcacct, 'destacct' : destacct, 'amount' : amount, 'customername' : name}
     yield outputrow
-
+    print(outputrow)
 
 def run():
     projectname = os.getenv('GOOGLE_CLOUD_PROJECT')
@@ -25,13 +34,13 @@ def run():
       '--temp_location=gs://' + bucketname + '/temploc/',
       '--max_num_workers=2',
       '--machine_type=e2-standard-2',
-      '--service_account_email=marssa@' + projectname + ".iam.gserviceaccount.com"
+      # '--service_account_email=marssa@' + projectname + ".iam.gserviceaccount.com"
       '--save_main_session'
     ]
 
     p = beam.Pipeline(argv=argv)
-    subscription = "projects/" + projectname + "/subscriptions/activities-subscription"
-    outputtable = projectname + ":mars.raw"
+    subscription = "projects/" + projectname + "/subscriptions/mars-activities"
+    outputtable = projectname + ":mars.activities_real_time"
     
     print("Starting Beam Job - next step start the pipeline")
     (p
